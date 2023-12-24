@@ -104,5 +104,30 @@ share .toString(), so we’re good there. But, since only number has a
 .toFixed() method, TypeScript will complain if we try to call it.
 */
 
+// Unions with Literal Types
+type Color = 'green' | 'yellow' | 'red';
+
+function changeLight(color: Color) {
+  // ...
+}
+
+type Status = 'idle' | 'downloading' | 'complete';
+
+function downloadStatus(status: Status) {
+  if (status === 'idle') {
+    console.log('Download');
+  }
+
+  if (status === 'downloading') {
+    console.log('Downloading...');
+  }
+
+  if (status === 'complete') {
+    console.log('Your download is complete!');
+  }
+}
+
+downloadStatus('complete');
+
 
 
