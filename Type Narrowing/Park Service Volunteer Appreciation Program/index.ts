@@ -20,7 +20,38 @@ type Volunteers = {
 
 function combineVolunteers(
   volunteers: (RaccoonMeadowsVolunteers | WolfPointVolunteers)[]
-) {
+): Volunteers[] {
+  return volunteers.map((volunteer) => {
+    let id = volunteer.id;
+    if (typeof id === 'string') {
+      id = parseInt(id, 10);
+    }
+    return {
+      id,
+      name: volunteer.name,
+      activities: volunteer.activities,
+    };
+  });
+}
+
+function isVerified(verified: string | boolean){
+  if (typeof verified === 'string'){
+    if (verified === 'Yes') {
+      return true;
+    } else if (verified === 'No'){
+      return false;
+    }
+  } else if (typeof verified === 'boolean') {
+    return verified;
+  }
+}
+
+function getHours(activity: CombinedActivity){
+  if ('hours' in activity){
+    return activity.hours;
+  } else {
+    return activity.time;
+  }
 
 }
 
@@ -29,7 +60,9 @@ function calculateHours(volunteers: Volunteers[]) {
     let hours = 0;
 
     volunteer.activities.forEach((activity) => {
-
+      if (isVerified(activity.verified)) {
+        hours = hours + getHours(activity);
+      }
     });
 
     return {
@@ -40,6 +73,15 @@ function calculateHours(volunteers: Volunteers[]) {
   });
 }
 
+function byHours(a, b){
+  return b.hours - a.hours;
+}
+
+
+
 const combinedVolunteers = combineVolunteers(
   [].concat(wolfPointVolunteers, raccoonMeadowsVolunteers)
 );
+
+const result = calculateHours(combinedVolunteers);
+console.log(result.sort(byHours));
